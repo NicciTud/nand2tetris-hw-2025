@@ -41,17 +41,16 @@ CHIP ALU {
         ng;      // if (out < 0)  equals 1, else 0
 
     PARTS:
-    //set values, make x and y equal 0
-    Mux16(a = x, b = false, sel = zx, out = zeroX);
-    Mux16(a = y, b = false, sel = zy, out = zeroY);
+    //set values, make x and y equal 0, and not x and y
+    Mux16(a=x, sel=zx, out=zeroX);
+    Mux16(a=y, sel=zy, out=zeroY);
     
-    //not x and y
-    Not16(in = zeroX, out = negX);
-    Not16(in = zeroY, out = negY);
+    Not16(in=zeroX, out=negX);
+    Not16(in=zeroY, out=negY);
 
-    //negates x and y
     Mux16(a=zeroX, b=negX, sel=nx, out=tempX);
     Mux16(a=zeroY, b=negY, sel=ny, out=tempY);
+
 
     //f selection result
     Add16(a=tempX, b=tempY, out=XplusY);
@@ -60,7 +59,7 @@ CHIP ALU {
 
     //negate output, no selector
     Not16(in=tempOut, out=negOut);
-    Mux16(a=tempOut, b=negOut, sel=no, out=finalOut, out[15]=msb, out[0..7]=lowOut, out[8..15]=highOut);
+    Mux16(a=tempOut, b=negOut, sel=no, out = out, out[15]=msb, out[0..7]=lowOut, out[8..15]=highOut);
   
     //zr check
     Or8Way(in=lowOut, out = orLow);
